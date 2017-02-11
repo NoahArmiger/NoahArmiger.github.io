@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Bootstrap Case</title>
+        <!-- BOOTSTRAP/JQUERY magic -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!--BOOTSTRAP/JQUERY magic -->
+
+        <!-- FIREBASE magic -->
+        <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyDp93MXLWS6axDo92U1vRUgw8pc3hjmeKQ",
+                authDomain: "hackathondrive.firebaseapp.com",
+                databaseURL: "https://hackathondrive.firebaseio.com",
+                messagingSenderId: "283348506185"
+            };
+            firebase.initializeApp(config);
+
+        </script>
+        <!--/ FIREBASE magic -->
+
+
+        <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&sensors=false&key=AIzaSyAG-3s-21Zdv17aj45vf1bvTPMwm59H0uo">
+        </script>
+        <script>
+            var map;
+            var markers = [];
+            var numMarkers = 0;
+            var polygon = [];
+            var numPolygons = 0;
+            
+            function uploadMarkersToFirebase() {
+                
+                
+            }
+            
+            function placeMarker(location) {
+                var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map,
+                    draggable:true
+                });
+                google.maps.event.addListener(marker, 'dragend', function(marker){
+                    updatePolygon();
+                    //var latLng = marker.latLng; 
+                    //currentLatitude = latLng.lat();
+                    //currentLongitude = latLng.lng();
+                    //jQ("#latitude").val(currentLatitude);
+                    //jQ("#longitude").val(currentLongitude);
+                });
+                google.maps.event.addListener(marker, 'dblclick', function(event) {
+                    //placeMarker(event.latLng);
+                    for(var i = 0; i < numMarkers;i++) {
+                        if(markers[i] == marker) {
+                            for(var j = i; j < numMarkers-1;j++) {
+                                markers[j] = markers[j+1];
+                            }
+                            numMarkers--;
+                            break;
+                        }
+                    }
+                    marker.setMap(null);
+                    updatePolygon();
+                });
+
+                markers[numMarkers] = marker;
+                numMarkers++;
+            }
+            function acresToFertilizer(acres, eYield) {
+                return acres*(35 + 1.2*eYield);
+            }
+            function updatePolygon() {
+                for(var i = 0; i < numPolygons; i++) {
+                    polygon[i].setMap(null);
+                }
+                numPolygons = 0;
+                polygon = [];
+                polygon = [];
+                var coords = new Array();
+                for(var i = 0; i < numMarkers;i++) {
+                    coords[i] = markers[i].getPosition();//{lat: markers[i].lat, lng: markers[i].lng};
+                }
+                console.log(coords);
+                var bermudaTriangle = new google.maps.Polygon({
+                    paths: coords,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35
+                });
+                bermudaTriangle.setMap(map);
+                polygon[numPolygons] = bermudaTriangle;
+                numPolygons++;
+                size = getSize(polygon[numPolygons-1]);
+                console.log(size);
+                console.log(acresToFertilizer(size, 100));
+            }
+            function getSize(polygon) {
+                return 0.000247106 * google.maps.geometry.spherical.computeArea(polygon.getPath());   //acre constant times meters squared
+            }
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    //alert("Geolocation is not supported by this browser.");
+                }
+            }
+            function showPosition(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                map.setCenter(new google.maps.LatLng(lat, lng));
+            }
+            //loads google map
+            function loadMap() {
+
+                var uluru = {lat: 37, lng: -95};
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    disableDoubleClickZoom: true,
+                    center: uluru,
+                    mapTypeId: google.maps.MapTypeId.HYBRID
+
+                });
+                getLocation();
+
+                google.maps.event.addListener(map, 'dblclick', function(event) {
+                    placeMarker(event.latLng);
+                    updatePolygon();
+                });
+
+
+
+                var input = document.getElementById('pac-input');
+                var searchBox = new google.maps.places.SearchBox(input);
+                map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+                // Bias the SearchBox results towards current map's viewport.
+                map.addListener('bounds_changed', function() {
+                    searchBox.setBounds(map.getBounds());
+                });
+
+
+
+
+                // Listen for the event fired when the user selects a prediction and retrieve
+                // more details for that place.
+                searchBox.addListener('places_changed', function() {
+                    var places = searchBox.getPlaces();
+
+                    if (places.length == 0) {
+                        return;
+                    }
+
+                    // Clear out the old markers.
+                    markers.forEach(function(marker) {
+                        marker.setMap(null);
+                    });
+                    markers = [];
+
+                    // For each place, get the icon, name and location.
+                    var bounds = new google.maps.LatLngBounds();
+                    places.forEach(function(place) {
+                        if (!place.geometry) {
+                            console.log("Returned place contains no geometry");
+                            return;
+                        }
+                        var icon = {
+                            url: place.icon,
+                            size: new google.maps.Size(71, 71),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(17, 34),
+                            scaledSize: new google.maps.Size(25, 25)
+                        };
+
+
+                        if (place.geometry.viewport) {
+                            // Only geocodes have viewport.
+                            bounds.union(place.geometry.viewport);
+                        } else {
+                            bounds.extend(place.geometry.location);
+                        }
+                    });
+                    map.fitBounds(bounds);
+                });
+
+            }
+
+            $(document).ready(function() {
+                // var val = loadAllEvents();
+                loadMap();
+                //showAllEvents();
+            });
+        </script>
+    </head>
+    <body>
+        <div>
+            <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+
+            <div style = "height: 600px; width: 600px;"id = "map"> </div>
+        </div>
+
+        	
+    </body>
+</html>
+
