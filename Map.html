@@ -29,17 +29,26 @@
         <script src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&sensors=false&key=AIzaSyAG-3s-21Zdv17aj45vf1bvTPMwm59H0uo">
         </script>
         <script>
+
+            var dB = firebase.database();    // database used in FireBase
             var map;
             var markers = [];
             var numMarkers = 0;
             var polygon = [];
             var numPolygons = 0;
-            
+
             function uploadMarkersToFirebase() {
-                
-                
+             //change this
+                var obj = getSnapshot()["usersList"];
+                for(var i in obj) {
+
+                    if(i["userName"] == firebase.auth().currentUser) {
+                        return i;
+                    }
+                }
+
             }
-            
+
             function placeMarker(location) {
                 var marker = new google.maps.Marker({
                     position: location, 
@@ -207,7 +216,7 @@
             <div style = "height: 600px; width: 600px;"id = "map"> </div>
         </div>
 
-        	
+
     </body>
 </html>
 
