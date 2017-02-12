@@ -157,17 +157,25 @@
                 markers[numMarkers] = marker;
                 numMarkers++;
             }
-            function acresToFertilizer(acres, eYield, crop) {
+            function getCostOfNitrogen(amt, percent, price) {
+
+                console.log( (amt / ((.01)*percent)) * price / 2000  );
+
+                return (amt / ((.01)*percent) * price / 2000);
+            }
+            function acresToFertilizer(acres, eYield, crop, percent, price) {
                 var s;
-                console.log(crop);
+                ;
                 if(crop == "Wheat") {
                     if(eYield == 0 || isNaN(eYield)){
                         eYield = 55;
-                        s = "Nitrogen needed, assuming 55 bushels/acre: <b>" + (2.5*acres*eYield) + "</b> pounds.";
+                        s = "Nitrogen needed, assuming 55 bushels/acre: <b>" + (2.5*acres*eYield) + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(2.5*acres*eYield, percent, price) + "</b>.";
                     }
                     else {
-                        console.log(eYield);
-                        s = "Nitrogen needed: <b>" + (2.5*acres*eYield) + "</b> pounds.";
+
+                        s = "Nitrogen needed: <b>" + (2.5*acres*eYield) + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(2.5*acres*eYield, percent, price) + "</b>.";
                     }
                     return s;
                 }
@@ -176,43 +184,41 @@
                     {
 
                         eYield = 158;
-                        s = "Nitrogen needed, assuming 158 bushels/acre: <br>"
-                            +   "if 30% of Nitrogen is planted by sidedressing and fertigation: <b>" + acres*(35 + .95* 1.2*eYield) + "</b> pounds.";
-                        s   +=  "<br>if less than 30% of Nitrogen is planted by sidedressing and fertigation: <b>" + acres*(35 + 1.2*eYield) + "</b> pounds.";
-                        s   +=  "<br>if Nitrogen is mostly fall applied: <b>" + acres*(35 + 1.2 * 1.05 * eYield) + "</b> pounds.";
+                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + acres*(35 + 1.2 * eYield) + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(35+1.2*eYield), percent, price);
 
                     }
                     else {
-                        s = "Nitrogen needed: <br>"
-                            +   "if 30% of Nitrogen is planted by sidedressing and fertigation: <b>" + acres*(35 + .95* 1.2*eYield) + "</b> pounds.";
-                        s   +=  "<br>if less than 30% of Nitrogen is planted by sidedressing and fertigation: <b>" + acres*(35 + 1.2*eYield) + "</b> pounds.";
-                        s   +=  "<br>if Nitrogen is mostly fall applied: <b>" + acres*(35 + 1.2 * 1.05 * eYield) + "</b> pounds.";
 
+                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + acres*(35 + 1.2 * eYield) + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(35+1.2*eYield), percent, price);
                     }
-                    console.log("ret");
+
 
                     return s;
                 }
                 if(crop == "Cotton") {
                     if(eYield == 0 || isNaN(eYield)) {
                         eYield = 2.5
-                        s = "Nitrogen needed, assuming 2.5 bales: <b>" + 50 *eYield * acres + "</b> pounds.";
+                        s = "Nitrogen needed, assuming 2.5 bales: <b>" + 50 *eYield * acres + "</b> pounds.<br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(50*eYield), percent, price);
                     }
                     else {
-                        s = "Nitrogen needed: <b>" + 50 * eYield * acres + "</b> pounds.";
-                        
+                        s = "Nitrogen needed: <b>" + 50 * eYield * acres + "</b> pounds.<br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(50*eYield), percent, price);
                     }
                     return s;
                 }
-                
+
                 if(crop == "Soy Bean") {
                     if(eYield == 0 || isNaN(eYield)) {
                         eYield = 46
-                        s = "Nitrogen needed, assuming 46 bushels: <b>" + 3.8 *eYield * acres + "</b> pounds.";
+                        s = "Nitrogen needed, assuming 46 bushels: <b>" + 3.8 *eYield * acres + "</b> pounds.<br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(3.8*eYield), percent, price);
                     }
                     else {
-                        s = "Nitrogen needed: <b>" + 3.8 * eYield * acres + "</b> pounds.";
-                        
+                        s = "Nitrogen needed: <b>" + 3.8 * eYield * acres + "</b> pounds.<br>";
+                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(3.8*eYield), percent, price);
                     }
                     return s;
                 }
@@ -230,7 +236,7 @@
                 for(var i = 0; i < numMarkers;i++) {
                     coords[i] = markers[i].getPosition();
                 }
-                console.log(coords);
+
                 var bermudaTriangle = new google.maps.Polygon({
                     paths: coords,
                     strokeColor: '#FF0000',
@@ -246,18 +252,55 @@
 
                 var crop = $("#sel1").val();
                 var eYield = $("#EXPECTEDYIELD").val();
-                console.log(parseInt(eYield));
-                console.log(crop);
+
                 if(isNaN(parseInt(eYield))) {
                     eYield = 0;
-                    console.log("zeroed");
+
                 }
-                console.log(size);
+
                 $("#acres").html(size);
-                var cost = acresToFertilizer(size, eYield, crop);
+                var percent;
+                var price;
+                
+                
+                
+                
+                var percent = $("#sel2").val();
+                var price = parseInt($("#PRICEOFNITROGEN").val());
+                if(percent == "Anhydrous (82%)") {
+                    percent = 82;
+                    price = 391
+                }
+                else if(percent == "28% (28%)") {
+                    percent = 28;
+                    price = 206
+                }
+                else if(percent == "32 (32%)") {
+                    percent = 32;
+                    price = 294
+                }
+                else if(percent == "DAP (18%)") {
+                    percent = 18;
+                    price = 412;
+                }
+                else if(percent == "UREA (46%)") {
+                    percent = 46;
+                    price = 345
+                }
+                else if(percent == "POTASH (9%)") {
+                    percent = 9
+                    price = 360
+                }
+                else if(percent == "Other") {
+                    percent = parseInt($("#PERCENTNITROGEN").val());
+                }
+                
+                console.log(percent);
+                console.log(price);
+                console.log("a");
+                var cost = acresToFertilizer(size, eYield, crop, percent, price);
                 $("#cost").html(cost);
-                //console.log(size);
-                //console.log(acresToFertilizer(size, 100));
+
             }
             function getSize(polygon) {
                 return 0.000247106 * google.maps.geometry.spherical.computeArea(polygon.getPath());   //acre constant times meters squared
@@ -353,7 +396,17 @@
             $(document).ready(function() {
                 // var val = loadAllEvents();
                 loadMap();
+                $("#OTHER").hide();
                 //showAllEvents();
+                $("#sel2").change(function() {
+                    if($("#sel2").val() == "Other") {
+                        $("#OTHER").show();
+                    } 
+                    else {
+                        $("#OTHER").hide();
+                    }
+
+                });
                 $(document).keypress(function() {
                     updatePolygon();
                 });
@@ -431,6 +484,23 @@
                             <option>Wheat</option>
                         </select>
                     </div> 
+                    Type of Fertilizer:
+                    <div class="form-group">
+                        <select class="form-control" id="sel2">
+                            <option>Anhydrous (82%)</option>
+                            <option>28% (28%)</option>
+                            <option>32 (32%)</option>
+                            <option>DAP (18%)</option>
+                            <option>UREA (46%)</option>
+                            <option>POTASH (9%)</option>
+                            <option>Other</option>
+                        </select>
+                        <div id = "OTHER">
+                            Enter % Nitrogen of Fertilizer <input type = "text" class = "form-control" id = "PERCENTNITROGEN">
+                            Enter price per ton <input type = "text" class = "form-control" id = "PRICEOFNITROGEN">
+                        </div>
+                    </div> 
+
                     Expected Yield:                    <input type = "text" class = "form-control" id = "EXPECTEDYIELD">
                     Acres:                    
                     <div id = "acres"> </div>
