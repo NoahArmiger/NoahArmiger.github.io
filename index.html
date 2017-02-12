@@ -195,7 +195,7 @@
                     }
                     else {
 
-                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + Math.round(1000* acres*(35 + 1.2 * eYield)) / 1000 + "</b> pounds. <br>";
+                        s = "Nitrogen needed: <b>" + Math.round(1000* acres*(35 + 1.2 * eYield)) / 1000 + "</b> pounds. <br>";
                         s += "Cost: <b>$" + Math.round(100*getCostOfNitrogen(acres*(35+1.2*eYield), percent, price)) / 100;
                     }
 
