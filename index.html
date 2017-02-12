@@ -98,13 +98,14 @@
         <script>
             // Initialize Firebase
             var config = {
-                apiKey: "AIzaSyDp93MXLWS6axDo92U1vRUgw8pc3hjmeKQ",
-                authDomain: "hackathondrive.firebaseapp.com",
-                databaseURL: "https://hackathondrive.firebaseio.com",
-                messagingSenderId: "283348506185"
+                var config = {
+                apiKey: "AIzaSyB4sYjp8GfMaC82talwHknvygWZ7jKyNSM",
+                authDomain: "fertilizeme-1486834062586.firebaseapp.com",
+                databaseURL: "https://fertilizeme-1486834062586.firebaseio.com",
+                storageBucket: "fertilizeme-1486834062586.appspot.com",
+                messagingSenderId: "400456271256"
             };
             firebase.initializeApp(config);
-
         </script>
         <!--/ FIREBASE magic -->
 
@@ -120,16 +121,16 @@
             var polygon = [];
             var numPolygons = 0;
 
-                firebase.auth().onAuthStateChanged(function(user){
-                    if(user) {
-                        console.log("WE INNIE");
-                        $("#lugut").hide();
-                        //user.email
-                        $("#name").text(user.email);
-                    }
-                });
+            firebase.auth().onAuthStateChanged(function(user){
+                if(user) {
+                    console.log("fuphq");
+                    $("#lugut").hide();
+                    //user.email
+                    $("#name").text(user.email);
+                }
+            });
 
-            
+
 
             function placeMarker(location) {
                 var marker = new google.maps.Marker({
@@ -416,7 +417,7 @@
                 $(document).keypress(function() {
                     updatePolygon();
                 });
-             
+
             });
         </script>
     </head>
