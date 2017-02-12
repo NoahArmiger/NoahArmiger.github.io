@@ -120,7 +120,6 @@
             var polygon = [];
             var numPolygons = 0;
 
-            function fireBaseAuth() {
                 firebase.auth().onAuthStateChanged(function(user){
                     if(user) {
                         $("#lugut").hide();
@@ -129,7 +128,7 @@
                     }
                 });
 
-            }
+            
 
             function placeMarker(location) {
                 var marker = new google.maps.Marker({
@@ -416,7 +415,7 @@
                 $(document).keypress(function() {
                     updatePolygon();
                 });
-                fireBaseAuth();
+             
             });
         </script>
     </head>
