@@ -79,7 +79,7 @@
                 width: 345px;
             }
         </style>
-        <title>Nitrovention</title>
+        <title>Nitrovision</title>
         <!-- BOOTSTRAP/JQUERY magic -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -169,13 +169,13 @@
                 if(crop == "Wheat") {
                     if(eYield == 0 || isNaN(eYield)){
                         eYield = 55;
-                        s = "Nitrogen needed, assuming 55 bushels/acre: <b>" + (2.5*acres*eYield) + "</b> pounds. <br>";
-                        s += "Cost: <b>$" + getCostOfNitrogen(2.5*acres*eYield, percent, price) + "</b>.";
+                        s = "Nitrogen needed, assuming 55 bushels/acre: <b>" + Math.round(1000*(2.5*acres*eYield)) / 1000 + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + Math.round( 100 * getCostOfNitrogen(2.5*acres*eYield, percent, price)) / 100 + "</b>.";
                     }
                     else {
 
-                        s = "Nitrogen needed: <b>" + (2.5*acres*eYield) + "</b> pounds. <br>";
-                        s += "Cost: <b>$" + getCostOfNitrogen(2.5*acres*eYield, percent, price) + "</b>.";
+                        s = "Nitrogen needed: <b>" + Math.round(1000*(2.5*acres*eYield)) / 1000 + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + Math.round(100*getCostOfNitrogen(2.5*acres*eYield, percent, price))/100 + "</b>.";
                     }
                     return s;
                 }
@@ -184,14 +184,14 @@
                     {
 
                         eYield = 158;
-                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + acres*(35 + 1.2 * eYield) + "</b> pounds. <br>";
-                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(35+1.2*eYield), percent, price);
+                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + Math.round(1000*acres*(35 + 1.2 * eYield)) / 1000 + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + Math.round(100*getCostOfNitrogen(acres*(35+1.2*eYield), percent, price)) / 100;
 
                     }
                     else {
 
-                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + acres*(35 + 1.2 * eYield) + "</b> pounds. <br>";
-                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(35+1.2*eYield), percent, price);
+                        s = "Nitrogen needed, assuming 158 bushels/acre: <b>" + Math.round(1000* acres*(35 + 1.2 * eYield)) / 1000 + "</b> pounds. <br>";
+                        s += "Cost: <b>$" + Math.round(100*getCostOfNitrogen(acres*(35+1.2*eYield), percent, price)) / 100;
                     }
 
 
@@ -204,8 +204,8 @@
                         s += "Cost: <b>$" + Math.round( 100 * getCostOfNitrogen(acres*(50*eYield), percent, price)) / 100;
                     }
                     else {
-                        s = "Nitrogen needed: <b>" + 50 * eYield * acres + "</b> pounds.<br>";
-                        s += "Cost: <b>$" + getCostOfNitrogen(acres*(50*eYield), percent, price);
+                        s = "Nitrogen needed: <b>" + Math.round(1000*50 * eYield * acres)/1000 + "</b> pounds.<br>";
+                        s += "Cost: <b>$" + Math.round(100*getCostOfNitrogen(acres*(50*eYield), percent, price)) / 100;
                     }
                     return s;
                 }
@@ -413,7 +413,7 @@
             });
         </script>
     </head>
-    <body style = "background-image: url('amazing-cornfield-2.jpg')">
+    <body style = "background-image: url('amazing-cornfield-2.jpg');background-repeat: no-repeat;    background-size: 100% 100%;">
         <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" style = "opacity: 0.5; background-image:linear-gradient( #658288, #506D76 50%)" role="navigation">
             <div style = "opacity: 1" class="container">
@@ -425,7 +425,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" style = "color:white" href="#">Nitrovention</a>
+                    <b><a class="navbar-brand" style = "color:white" href="#">Nitrovision</a></b>
                 </div>
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -453,7 +453,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h4 style = "color:white">
-                        Highlight your field by double-click placing pins surrounding your field.
+               
                     </h4>
                     <!-- <h1 class="page-header">Portfolio Item
 <small>Item Subheading</small>
