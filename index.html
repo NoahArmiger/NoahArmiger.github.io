@@ -120,8 +120,14 @@
             var polygon = [];
             var numPolygons = 0;
 
-            function uploadMarkersToFirebase() {
-                //change this
+            function fireBaseAuth() {
+                firebase.auth().onAuthStateChanged(function(user){
+                    if(user) {
+                        $("#lugut").hide();
+                        //user.email
+                        $("#name").text(user.email);
+                    }
+                });
 
             }
 
@@ -431,15 +437,19 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
                     <form class="navbar-form navbar-right" role="search">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="username" placeholder="Username">
+                        <div id = "NAME"> </div>
+                        <div id = "lugut">            
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="username" placeholder="Username">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="password" placeholder="Password">
+                            </div>
+                            <button type="submit" class="btn btn-default">Sign In</button>
+                            <div style = "color:white">or, sign up <a href = 'signUp.html'>here</a></div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="password" placeholder="Password">
-                        </div>
-                        <button type="submit" class="btn btn-default">Sign In</button>
-                        <div style = "color:white">or, sign up <a href = 'signUp.html'>here</a></div>
                     </form>
+
                 </div>
                 <!-- /.navbar-collapse -->
             </div>
@@ -453,7 +463,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h4 style = "color:white">
-               
+
                     </h4>
                     <!-- <h1 class="page-header">Portfolio Item
 <small>Item Subheading</small>
