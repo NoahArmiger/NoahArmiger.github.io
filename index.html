@@ -122,6 +122,7 @@
 
                 firebase.auth().onAuthStateChanged(function(user){
                     if(user) {
+                        console.log("WE INNIE");
                         $("#lugut").hide();
                         //user.email
                         $("#name").text(user.email);
