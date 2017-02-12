@@ -420,8 +420,8 @@
 
             function signIn()
             {
-                var email = Document.getElementById("email");
-                var password = Document.getElementById("password");
+                var email = document.getElementById("email");
+                var password = document.getElementById("password");
 
                 firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
                     // Handle Errors here.
