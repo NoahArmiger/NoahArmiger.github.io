@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            @import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+            @import url(https://fonts.googleapis.com/css?family=Poiret+One);
+            
+            html {
+
+                background-color: #9ED5DF;
+                position: relative; 
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            
+            h2 { 
+                font-size: 24px; 
+                text-align: center;
+                line-height: 30px; 
+                margin: 0; 
+                padding: 10px; 
+            }
+            
+            input {
+                margin-bottom: 5px;
+            }
+            
+            .form
+            {
+                -moz-border-radius: 8px;
+                -webkit-border-radius: 8px;
+
+                color: #000; 
+                background-color: #FFF; 
+                margin: 100px auto 0; 
+                padding: 20px 20px 20px; 
+                position: relative; 
+                width: 330px; 
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="form">
+            <h2>Create a New Account</h2>
+            <form action="javascript:signUp()">
+                <label>Email</label> <br>
+                <input type="email" id="email" size="30" required>
+                <br>
+                <label>Password</label> <br>
+                <input type="password" id="password" size="30" pattern=".{6}.*" title="Password must be at least 6 characters." required>
+                <br>
+                <label>Confirm Password</label> <br>
+                <input type="password" id="confirmPass" size="30" pattern=".{6}.*" required>
+                <br>
+                <input type="button" value="Sign Up" onclick="signUp()">
+            </form>
+        </div>
+        
+        <!------ Firebase Initialization -------->
+        <script src="https://www.gstatic.com/firebasejs/3.6.9/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyB4sYjp8GfMaC82talwHknvygWZ7jKyNSM",
+                authDomain: "fertilizeme-1486834062586.firebaseapp.com",
+                databaseURL: "https://fertilizeme-1486834062586.firebaseio.com",
+                storageBucket: "fertilizeme-1486834062586.appspot.com",
+                messagingSenderId: "400456271256"
+            };
+            firebase.initializeApp(config);
+        </script>
+        <!------ End Firebase Initialization -------->
+        
+        <script>
+            function signUp()
+            {
+                var password = document.getElementById("password").value;
+                var email = document.getElementById("email").value;
+                
+                firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // [START_EXCLUDE]
+                    /*
+                    if (errorCode == 'auth/weak-password')
+                    {
+                        alert('The password is too weak.');
+                    }
+                    */
+                    if (errorCode == 'auth/email-already-in-use')
+                    {
+                        alert('Email already in use');
+                    }
+                    else
+                    {
+                        alert(errorMessage);
+                    }
+                    console.log(error);
+                    // [END_EXCLUDE]
+                });                
+            }
+            var password = document.getElementById("password");
+            var confirmPass = document.getElementById("confirmPass");
+            
+            function confirmPassword()
+            {
+                password = document.getElementById("password");
+                confirmPass = document.getElementById("confirmPass");
+                
+                if(password.value != confirmPass.value)
+                {
+                    confirmPass.setCustomValidity("Passwords Don't Match");
+                }
+                else
+                {
+                    confirmPass.setCustomValidity('');
+                }
+            }
+            
+            password.onchange = confirmPassword;
+            confirmPass.onkeyup = confirmPassword;
+            
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user)
+                {
+                    //alert(firebase.auth().currentUser.email);
+                    window.location.href = 'index.html';
+                }
+            });
+        </script>
+    </body>
+    
+    
+</html>
